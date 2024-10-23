@@ -1,0 +1,81 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+body{
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+    background-color: #acacac6c;
+}
+
+header{
+    font-size: 18px;
+    padding: 10px;
+    margin-top: 0px;
+}
+
+section img{
+    margin-top: 30px;
+    margin-bottom: 30px;
+    width: 225px;
+}
+
+section{
+    border: 1px solid rgba(128, 128, 128, 0.26);
+    align-content: center;
+    border-radius: 10px;
+    width: 320px;
+    height: 465px;
+    background-color: #f7f7f7;
+    margin-top:0px;
+}
+
+section button{
+    font-size: 15px;
+    border: none;
+    background-color: #B7B7B7;
+    height: 42px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    width: 80%;
+    cursor: pointer;
+}
+
+section p{
+    font-size: 15px;
+}
+
+a{
+    text-decoration: none;
+    color: rgb(53, 53, 53);
+    font-size: 15px;
+}
+
+section input{
+    border: 1px solid rgba(43, 43, 43, 0.404);
+    width: 246px;
+    height: 36px;
+    font-size: 18px;
+    border-radius: 5px;
+    margin-bottom: 18px;
+    box-sizing: border-box; /* Inclui padding e border no cálculo da largura */
+    background-color: #F0F0F0;
+}
+
+.principal{
+    display: flex;
+    justify-content: center;
+}
+
+.login{
+    margin: 25px;
+}
+
+footer{
+    text-align: center;
+    bottom: 30px;
+    position: center;
+    width: 100%;
+    font-size: 15px;
+}

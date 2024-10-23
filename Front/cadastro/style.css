@@ -22,7 +22,7 @@ section img{
 }
 
 section{
-    border: 1px solid rgba(128, 128, 128, 0.26);
+    border: 1px solid black;
     align-content: center;
     border-radius: 10px;
     width: 320px;
@@ -53,16 +53,26 @@ a{
 }
 
 section input{
-    border: 1px solid rgba(43, 43, 43, 0.404);
-    width: 246px;
+    border: 1px solid rgba(28, 27, 27, 0.404);
+    width: 75%;
     height: 36px;
     font-size: 18px;
     border-radius: 5px;
     margin-bottom: 18px;
     box-sizing: border-box; /* Inclui padding e border no cálculo da largura */
     background-color: #F0F0F0;
+    
 }
 
+
+#botao_cadastre-se {
+    width: 75%;
+    background-color: #b1b1b1;
+    height: 36px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    cursor: pointer;
+}
 .principal{
     display: flex;
     justify-content: center;

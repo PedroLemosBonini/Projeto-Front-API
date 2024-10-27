@@ -38,8 +38,8 @@
       }) // Fechamendo da then(response)
       .then((data) => {
         // Executa a resposta de sucesso - retorna ao usuário final
+
         // Exibe um alerta para o usuário final(front) com o nome do usuário que acabou de ser cadastrado
-  
         alert(data.message);
         console.log(data.message);
   
@@ -47,7 +47,7 @@
         document.getElementById("formulario_registro").reset();
       })
       .catch((error) => {
-        // Captura qualquer erro que ocorra durante o processo de requisição / resposta
+        // Captura qualquer erro que ocorra durante o processo da resposta
   
         // Exibe alerta(front) com o erro processado
         alert("Erro no cadastro: " + error.message);

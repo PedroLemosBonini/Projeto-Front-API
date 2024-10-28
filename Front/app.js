@@ -56,35 +56,4 @@
       });
   }
 
-  
-  // function getAllUsers(){
-  //   fetch("http://localhost:5000/projeto_reserva_senai/v1", {
-  //     method: "GET",
-  //     headers:{
-  //       "Content-Type": "application/json",
-  //     }
-  //   })
-  //     .then((response) => {
-  //       if(response.ok){
-  //         return response.json();
-  //       }
-  //       return response.json().then((err) => {
-  //         throw new Error(err.Error)
-  //       })
-  //     })
-  //       .then((data) => {
-  //         const userList = document.getElementById("user_list")
-  //         userList.innerHTML = ""; //Limpa a lista existente
-  
-  //         data.users.forEach((user) => {
-  //           const listItem = document.createElement("li");
-  //           listItem.textContent = `Nome: ${user.name}, CPF: ${user.cpf}, Email: ${user.email}`
-  //           userList.appendChild(listItem)
-  //         })
-  //       })
-  
-  //       .catch((error)=>{
-  //         alert("Erro ao obter usuários" + error.message)
-  //         console.error("Erro: ", error.message)
-  //       })
-  // }
+ 

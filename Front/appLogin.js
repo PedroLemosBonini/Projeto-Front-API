@@ -9,7 +9,7 @@ function loginUser(event) {
   const email = document.getElementById("email").value;
   const senha = document.getElementById("senha").value;
 
-  fetch("http://localhost:5000/projeto_reserva_senai/v1/userLogin", {
+  fetch("http://localhost:5000/projeto_reserva_senai/v1/usuarioLogin", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -31,6 +31,7 @@ function loginUser(event) {
       console.log(data.message);
 
       document.getElementById("login_formulario").reset();
+      window.location.href = "home.html"
     })
     .catch((error) => {
       // Captura qualquer erro que ocorra durante o processo de requisição / resposta

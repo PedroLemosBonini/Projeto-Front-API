@@ -31,17 +31,6 @@ section{
     margin-top:20px;
 }
 
-section button{
-    font-size: 15px;
-    border: none;
-    background-color: #B7B7B7;
-    height: 42px;
-    border-radius: 5px;
-    margin-bottom: 15px;
-    width: 80%;
-    cursor: pointer;
-}
-
 section p{
     font-size: 15px;
 }

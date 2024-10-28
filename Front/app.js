@@ -14,7 +14,7 @@
     const senha = document.getElementById("senha").value;
   
     // Requisição HTTP para o endpoint de cadastro de usuário
-    fetch("http://localhost:5000/projeto_reserva_senai/v1/user/", {
+    fetch("http://localhost:5000/projeto_reserva_senai/v1/usuario/", {
       // Realiza uma chamada HTTP para o servidor (a rota definida)
       method: "POST",
       headers: {
@@ -45,6 +45,7 @@
   
         // Reseta os campos do formulário após o sucesso do cadastro
         document.getElementById("formulario_registro").reset();
+        window.location.href = "../index.html"
       })
       .catch((error) => {
         // Captura qualquer erro que ocorra durante o processo da resposta

@@ -19,7 +19,7 @@ class AppController {
 
   routes() {
     const apiRoutes = require("./routes/apiRoutes");
-    this.express.use("/projeto_reserva_senai/v1/", apiRoutes); // Definição da URL Base
+    this.express.use("/projeto_reserva_senai/", apiRoutes); // Definição da URL Base
   }
 }
 

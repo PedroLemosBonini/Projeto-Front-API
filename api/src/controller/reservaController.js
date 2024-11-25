@@ -75,7 +75,7 @@ module.exports = class reservaController { Reserva
   } 
 
   static async deleteReserva(req, res) {
-    const reservaId = req.params.id_reserva;
+    const reservaId = req.params.id;
     const query = `DELETE FROM reserva WHERE id_reserva = ?`;
     const values = [reservaId];
     try {

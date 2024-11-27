@@ -1,24 +1,44 @@
 const connect = require("../db/connect");
 
-module.exports = class reservaController { Reserva
+module.exports = class reservaController {
+  Reserva;
   // criação de um Reserva
   static async createReserva(req, res) {
-    const { id_sala, id_usuario, data_reserva } = req.body;
+    const { id_sala, id_usuario, data_inicio, data_fim } = req.body;
 
-    if (!id_sala || !id_usuario || !data_reserva) {
+    if (!id_sala || !id_usuario || !data_inicio || !data_fim) {
       return res
         .status(400)
         .json({ error: "Todos os campos devem ser preenchidos" });
     }
-    const query = ` INSERT INTO reserva (id_sala, id_usuario, data_reserva) VALUES (?,?,?)`;
-    const values = [id_sala, id_usuario, data_reserva];
+
+    //query e values para validação
+    const queryV = `SELECT * from reserva WHERE id_sala = ? AND (data_inicio < ? AND data_fim > ?)`;
+    const values = [id_sala, data_fim, data_inicio];
+
     try {
-      connect.query(query, values, (err) => {
+      connect.query(queryV, values, (err, results) => {
         if (err) {
           console.log(err);
           return res.status(500).json({ error: "Erro ao reservar sala!" });
+        } else if (results.length < 0) {
+          return res.status(201).json({ message: "Sala já reservada!" });
         }
-        return res.status(201).json({ message: "Sala reservada com sucesso!" });
+        if (data_inicio > data_fim) {
+          return res.status(400).json({ error: "Selecione uma data válida" });
+        }
+
+        const query = `INSERT INTO reserva (data_inicio, data_fim, id_usuario, id_sala) VALUES (?,?,?,?)`;
+        const novosvalores = [data_inicio, data_fim, id_usuario, id_sala];
+        connect.query(query, novosvalores, (err) => {
+          if (err) {
+            console.log(err);
+            return res.status(500).json({ error: "Erro ao reservar sala!" });
+          }
+          return res
+            .status(201)
+            .json({ message: "Sala reservada com sucesso" });
+        });
       });
     } catch (error) {
       console.log("Erro ao executar consulta: ", error);
@@ -45,34 +65,60 @@ module.exports = class reservaController { Reserva
   }
 
   static async updateReserva(req, res) {
-    const { id_sala, id_usuario, data_reserva, id_reserva } = req.body;
+    const { id_sala, data_inicio, data_fim, id_reserva } = req.body;
 
-    if (!id_sala || !id_usuario || !data_reserva || !id_reserva) {
+    // Verifica se todos os parâmetros necessários foram enviados
+    if (!data_inicio || !data_fim || !id_reserva || !id_sala) {
       return res
         .status(400)
         .json({ error: "Todos os campos devem ser preenchidos" });
     }
-    const query = ` UPDATE reserva SET id_sala = ?, id_usuario = ?, data_reserva = ? WHERE id_reserva = ?`;
-    const values = [id_sala, id_usuario, data_reserva];
+
+    // Verifica se a sala está disponível para o novo horário
+    const query = `SELECT * FROM reserva WHERE id_sala = ? AND (data_inicio < ? AND data_fim > ?) AND id_reserva != ?`;
+    const values = [id_sala, data_fim, data_inicio, id_reserva];
+
     try {
+      // Verificar se o horário está disponível
       connect.query(query, values, (err, results) => {
-        console.log("Resultados: ", results);
         if (err) {
           console.log(err);
-          return res.status(400).json({ error: "Erro ao atualizar reserva!" });
+          return res
+            .status(400)
+            .json({ error: "Erro ao verificar disponibilidade!" });
         }
-        if (results.affectedRows === 0) {
-          return res.status(404).json({ error: "Reserva não encontrada" });
+        if (data_inicio > data_fim) {
+          return res.status(400).json({ error: "Selecione uma data válida" });
         }
-        return res
-          .status(200)
-          .json({ message: "Reserva atualizada com sucesso: " });
+
+        // Se não houver resultados, significa que o horário está disponível
+        if (results.length > 0) {
+          return res.status(400).json({ error: "Horário já reservado!" });
+        }
+        
+
+        // Atualizar a reserva no banco de dados
+        const updateQuery = `UPDATE reserva SET data_inicio = ?, data_fim = ? WHERE id_reserva = ?`;
+        const updateValues = [data_inicio, data_fim, id_reserva];
+
+        connect.query(updateQuery, updateValues, (err) => {
+          if (err) {
+            console.log(err);
+            return res
+              .status(500)
+              .json({ error: "Erro ao atualizar a reserva!" });
+          }
+
+          return res
+            .status(201)
+            .json({ message: "Reserva atualizada com sucesso!" });
+        });
       });
     } catch (error) {
       console.log(error);
       return res.status(500).json({ error: "Erro interno do servidor" });
     }
-  } 
+  }
 
   static async deleteReserva(req, res) {
     const reservaId = req.params.id;
@@ -87,7 +133,9 @@ module.exports = class reservaController { Reserva
         if (results.affectedRows === 0) {
           return res.status(404).json({ error: "Reserva não Encontrado" });
         }
-        return res.status(200).json({ message: "Reserva Excluido com Sucesso" });
+        return res
+          .status(200)
+          .json({ message: "Reserva Excluido com Sucesso" });
       });
     } catch (error) {
       console.error(error);
@@ -104,7 +152,7 @@ module.exports = class reservaController { Reserva
           console.log(err);
           return res.status(500).json({ error: "Erro ao buscar Reservas" });
         }
-        const dataReserva = new Date(results[0].data_hora);
+        const dataReserva = new Date(results[0].data_inicio);
         const dia = dataReserva.getDate();
         const mes = dataReserva.getMonth() + 1;
         const ano = dataReserva.getFullYear();
@@ -112,14 +160,14 @@ module.exports = class reservaController { Reserva
 
         const now = new Date();
         const ReservasPassados = results.filter(
-          (Reserva) => new Date(Reserva.data_hora) < now
+          (Reserva) => new Date(Reserva.data_inicio) < now
         );
         const ReservasFuturos = results.filter(
-          (Reserva) => new Date(Reserva.data_hora) >= now
+          (Reserva) => new Date(Reserva.data_inicio) >= now
         );
 
         const diferencaMs =
-          ReservasFuturos[0].data_hora.getTime() - now.getTime();
+          ReservasFuturos[0].data_inicio.getTime() - now.getTime();
         const dias = Math.floor(diferencaMs / (1000 * 60 * 60 * 24));
         const horas = Math.floor(
           (diferencaMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
@@ -148,7 +196,7 @@ module.exports = class reservaController { Reserva
         const dataFiltro = new Date("2024-12-15").toISOString().split("T");
         const ReservasDia = results.filter(
           (Reserva) =>
-            new Date(Reserva.data_hora).toISOString().split("T")[0] ===
+            new Date(Reserva.data_inicio).toISOString().split("T")[0] ===
             dataFiltro[0]
         );
         console.log("Reservas:", ReservasDia);
@@ -177,9 +225,9 @@ module.exports = class reservaController { Reserva
 
         const ReservasSelecionados = results.filter(
           (Reserva) =>
-            new Date(Reserva.data_hora).toISOString().split("T")[0] >=
+            new Date(Reserva.data_inicio).toISOString().split("T")[0] >=
               dataFiltro[0] &&
-            new Date(Reserva.data_hora).toISOString().split("T")[0] <
+            new Date(Reserva.data_inicio).toISOString().split("T")[0] <
               dataLimite.toISOString().split("T")[0]
         );
 
